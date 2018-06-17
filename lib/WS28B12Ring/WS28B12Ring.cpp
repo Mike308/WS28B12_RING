@@ -123,4 +123,24 @@ void WS28B12Ring::hsvRotation(unsigned long currentTime, unsigned long fillTime,
 void WS28B12Ring::hsvRingSpectrum(unsigned long currentTime, unsigned long fillTime,
                          unsigned long eraseTime, bool reverse){
     
+  static int fillCnt = 0;
+  static int eraseCnt = 12;
+  static unsigned long previousTime = 0;
+  static bool clearFlag = false;
+
+  if (clearFlag == false) {
+    // previousTime = 0;
+    if (currentTime - previousTime >= fillTime) {
+      previousTime = currentTime;
+      setHSVColor(fillCnt * 15, 100, 5, &r, &g, &b);
+      setPixelColor(fillCnt, Color(r, g, b));
+      show();
+      fillCnt++;
+      if (fillCnt == 24) {
+        //clearFlag = true;
+        fillCnt = 0;
+      }
+    }
+  }
+
  }
