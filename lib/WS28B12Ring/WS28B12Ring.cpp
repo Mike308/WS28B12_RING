@@ -1,8 +1,7 @@
 #include "WS28B12Ring.h"
 
 void WS28B12Ring::setHSVColor(uint16_t h, uint8_t s, uint8_t v, uint8_t *r,
-                              uint8_t *g, uint8_t *b)
-{
+                              uint8_t *g, uint8_t *b){
 
     uint8_t diff;
     uint8_t red, green, blue;
@@ -144,3 +143,52 @@ void WS28B12Ring::hsvRingSpectrum(unsigned long currentTime, unsigned long fillT
   }
 
  }
+
+ void WS28B12Ring::valueRotation(unsigned long currentTime, unsigned long fillTime,
+                       unsigned long rotationSpeed){
+  static uint8_t fillCnt = 0;
+  static uint8_t rotationCnt = 0;
+  static unsigned long previousTime = 0;
+  static bool rotationFlag = false;
+  static uint8_t vArray[12];
+  static int newValue = 0;
+  static uint8_t lastValue;
+
+  if (!rotationFlag) {
+    if (currentTime - previousTime >= fillTime) {
+      previousTime = currentTime;
+      setHSVColor(180, 100, fillCnt + 2, &r, &g, &b);
+      setPixelColor(fillCnt, Color(r, g, b));
+      show();
+      vArray[fillCnt] = fillCnt + 1;
+      fillCnt++;
+      if (fillCnt == 12) {
+        fillCnt = 0;
+        rotationFlag = true;
+      }
+    }
+  } else {
+    if (currentTime - previousTime >= rotationSpeed) {
+      previousTime = currentTime;
+      if (rotationCnt < 11) {
+        if (fillCnt < 12) {
+
+          newValue = (int)(vArray[fillCnt] - 2);
+          if (newValue < 0)
+            newValue = 14;
+          vArray[fillCnt] = (uint8_t)newValue;
+          setHSVColor(180, 100, newValue, &r, &g, &b);
+          setPixelColor(fillCnt, Color(r, g, b));
+          show();
+          fillCnt++;
+          if (fillCnt == 12){
+            fillCnt = 0;
+            rotationCnt++;
+            if (rotationCnt == 11) rotationCnt = 0;
+          }
+        }
+      }
+    }
+  }
+
+  }
