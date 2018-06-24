@@ -14,9 +14,12 @@ class WS28B12Ring : public Adafruit_NeoPixel
                      unsigned long rotationSpeed);
     void valueRotation(unsigned long currentTime, unsigned long fillTime,
                        unsigned long rotationSpeed);
+    void colorRotation(unsigned long currentTime, unsigned long rotationSpeed, uint8_t ledCnt);
+                        
 
     private:
         uint8_t r,g,b;
+        void setMultiplePixel(uint8_t ledCnt, uint8_t r, uint8_t g, uint8_t b);
 
                         
 
