@@ -6,7 +6,6 @@ Usart::Usart(){
 
 void Usart::usartEvent(String rxStr){
     if (rxFlag){
-        Serial.println(String(rxStr));
         (*rxCallback)(rxStr);
         rxFlag = false;
     }
